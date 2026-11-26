@@ -1,0 +1,14 @@
+# Local configuration (copy .env.example to .env)
+.env
+
+# Editors
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
