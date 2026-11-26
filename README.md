@@ -1,4 +1,4 @@
-# ollama-api
+# ollama-code-agent
 
 **A tool-using agent on a local LLM, served by FastAPI.** Built as my project for the Hugging Face Agents Course
 (2025), which I completed with certification.
