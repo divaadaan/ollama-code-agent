@@ -46,7 +46,7 @@ Docker build targets and compose profiles:
 | `monitoring` | Prometheus and Grafana (port 3000) |
 | `dev` | The full build with dev tools and auto-reload |
 
-Other endpoints: `/health`, `/health/simple`, `/telemetry`, `/metrics` and `/stats`.
+Other endpoints: `/health`, `/health/simple`, `/telemetry`, `/metrics`, `/stats` and `/toolkit-test` (see below).
 
 ## What I learned
 
@@ -58,7 +58,35 @@ Other endpoints: `/health`, `/health/simple`, `/telemetry`, `/metrics` and `/sta
 - **Telemetry should be optional.** Tracing lives behind an interface with a no-op default, so the lite build has no
   OpenTelemetry dependency.
 
-## Not finished
+## Tests and the tool benchmark
 
-- `GET /toolkit-test` and `core/test_toolkit.py` are stubs: the per-tool benchmark was planned, not written.
-- There are no automated tests yet.
+`pytest` runs 38 offline tests. Ollama, the network and the hosted APIs are replaced with fakes, so they need nothing
+running. They cover:
+- the LLM client: streaming, error chunks, timeouts, HTTP errors and the health check
+- the smolagents adapter
+- the agent: final-answer parsing, the PASS/FAIL review, and the retry loop
+- the file reader on real fixtures
+- the API endpoints
+- the benchmark's own logic
+
+Two of them are regression tests for bugs that are now fixed:
+- **Allowed imports.** The agent's allowed-import list held `'uuid, re, chess'` as one string, so none of the three
+  modules could be imported.
+- **A tool name.** The system prompt told the model to call `search_wikipedia`, a tool that doesn't exist (the real
+  one is `wikipedia_search`).
+
+`GET /toolkit-test` calls each tool once on a known input, from [`core/test/`](core/test/), and checks what comes
+back. Each case comes out pass, fail, error or skipped, with a timing. Add `?network=false` to skip the cases that
+go online. A local run with no API keys and no Tesseract gives:
+
+| Result | Cases |
+|---|---|
+| pass (9) | `web_search`, `wikipedia_search`, `visit_webpage`, `web_scrape`, `file_download`, and `file_reader` on text, CSV, JSON and PDF |
+| fail (1) | `extract_text_ocr`: Tesseract isn't installed locally (the Docker image installs it) |
+| skipped (1) | `image_to_text`: no `OPEN_AI_KEY` |
+
+The benchmark is also a way to catch flaky tools. DuckDuckGo sometimes answers "No results found" and passes on a
+retry.
+
+`smolagents` is pinned to 1.17.0, the release this was built against: later releases make `CodeAgent.system_prompt`
+read-only.

@@ -1,0 +1,5 @@
+# Fixtures are byte-exact: a PDF breaks if its line endings are converted
+*.pdf binary
+*.png binary
+*.jpg binary
+*.wav binary

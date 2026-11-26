@@ -56,7 +56,7 @@ class BasicAgent:
             model=SmolOllamaAdapter(llm_client),
             additional_authorized_imports=[
                 'csv', 'pandas', 'json', 'os', 'pathlib', 'tempfile',
-                'urllib', 'requests', 'numpy', 'io', 'base64', 'uuid, re, chess'
+                'urllib', 'requests', 'numpy', 'io', 'base64', 'uuid', 're', 'chess'
             ]
         )
 
@@ -72,7 +72,7 @@ class BasicAgent:
         - web_search(query="...") - Search the web
         - visit_webpage(url="...") - Visit webpages 
         - web_scrape(url="...", selector="...", wait_time=3) - website scraping 
-        - search_wikipedia(query="...") - Search Wikipedia
+        - wikipedia_search(query="...") - Search Wikipedia
         - file_download(url="...") - Download files
         - file_reader(file_path="...") - Read files
         - speech_to_text(file_path="...") - Transcribe audio to text

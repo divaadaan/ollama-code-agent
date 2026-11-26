@@ -1,0 +1,5 @@
+Agents plan before they act.
+
+They call tools to gather facts, read files and search the web.
+
+Then they check their work and give a final answer.

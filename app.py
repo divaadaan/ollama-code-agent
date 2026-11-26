@@ -291,10 +291,12 @@ def get_stats():
     }
 
 @app.get("/toolkit-test")
-async def toolkit_test():
-    """toolkit testing endpoint."""
+async def toolkit_test(
+    network: bool = Query(True, description="Include cases that need the network")
+):
+    """Benchmark each of the agent's tools on known inputs: pass/fail/error/skipped, with timings."""
     try:
-        tester = ToolkitTester(basic_agent.agent.tools)
+        tester = ToolkitTester(basic_agent.agent.tools, include_network=network)
         results = await tester.run_all_tests()
 
         return {

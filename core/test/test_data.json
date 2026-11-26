@@ -1,0 +1,10 @@
+{
+  "project": "ollama-api",
+  "tools": [
+    {
+      "name": "file_reader",
+      "local": true
+    }
+  ],
+  "version": 1
+}
